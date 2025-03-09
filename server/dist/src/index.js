@@ -9,10 +9,10 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
-// import { authMiddleware } from "./middleware/authMiddleware";
+const authMiddleware_1 = require("./middleware/authMiddleware");
 /* ROUTE IMPORT */
-// import tenantRoutes from "./routes/tenantRoutes";
-// import managerRoutes from "./routes/managerRoutes";
+const tenantRoutes_1 = __importDefault(require("./routes/tenantRoutes"));
+const managerRoutes_1 = __importDefault(require("./routes/managerRoutes"));
 // import propertyRoutes from "./routes/propertyRoutes";
 // import leaseRoutes from "./routes/leaseRoutes";
 // import applicationRoutes from "./routes/applicationRoutes";
@@ -33,8 +33,8 @@ app.get("/", (req, res) => {
 // app.use("/applications", applicationRoutes);
 // app.use("/properties", propertyRoutes);
 // app.use("/leases", leaseRoutes);
-// app.use("/tenants", authMiddleware(["tenant"]), tenantRoutes);
-// app.use("/managers", authMiddleware(["manager"]), managerRoutes);
+app.use("/tenants", (0, authMiddleware_1.authMiddleware)(["tenant"]), tenantRoutes_1.default);
+app.use("/managers", (0, authMiddleware_1.authMiddleware)(["manager"]), managerRoutes_1.default);
 /* SERVER */
 const port = Number(process.env.PORT) || 3002;
 app.listen(port, "0.0.0.0", () => {
