@@ -1,16 +1,15 @@
 import { cleanParams, createNewUserInDatabase, withToast } from "@/lib/utils";
-// import {
-//   Application,
-//   Lease,
-//   Manager,
-//   Payment,
-//   Property,
-//   Tenant,
-// } from "@/types/prismaTypes";
-import { Manager, Tenant } from "@/types/prismaTypes";
+import {
+  // Application,
+  Lease,
+  Manager,
+  Payment,
+  Property,
+  Tenant,
+} from "@/types/prismaTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
-// import { FiltersState } from ".";
+import { FiltersState } from ".";
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
@@ -28,10 +27,10 @@ export const api = createApi({
   tagTypes: [
     "Managers",
     "Tenants",
-  //   "Properties",
-  //   "PropertyDetails",
-  //   "Leases",
-  //   "Payments",
+    "Properties",
+    "PropertyDetails",
+    "Leases",
+    "Payments",
   //   "Applications",
   ],
   endpoints: (build) => ({
@@ -78,79 +77,79 @@ export const api = createApi({
     }),
 
     // property related endpoints
-    // getProperties: build.query<
-    //   Property[],
-    //   Partial<FiltersState> & { favoriteIds?: number[] }
-    // >({
-    //   query: (filters) => {
-    //     const params = cleanParams({
-    //       location: filters.location,
-    //       priceMin: filters.priceRange?.[0],
-    //       priceMax: filters.priceRange?.[1],
-    //       beds: filters.beds,
-    //       baths: filters.baths,
-    //       propertyType: filters.propertyType,
-    //       squareFeetMin: filters.squareFeet?.[0],
-    //       squareFeetMax: filters.squareFeet?.[1],
-    //       amenities: filters.amenities?.join(","),
-    //       availableFrom: filters.availableFrom,
-    //       favoriteIds: filters.favoriteIds?.join(","),
-    //       latitude: filters.coordinates?.[1],
-    //       longitude: filters.coordinates?.[0],
-    //     });
+    getProperties: build.query<
+      Property[],
+      Partial<FiltersState> & { favoriteIds?: number[] }
+    >({
+      query: (filters) => {
+        const params = cleanParams({
+          location: filters.location,
+          priceMin: filters.priceRange?.[0],
+          priceMax: filters.priceRange?.[1],
+          beds: filters.beds,
+          baths: filters.baths,
+          propertyType: filters.propertyType,
+          squareFeetMin: filters.squareFeet?.[0],
+          squareFeetMax: filters.squareFeet?.[1],
+          amenities: filters.amenities?.join(","),
+          availableFrom: filters.availableFrom,
+          favoriteIds: filters.favoriteIds?.join(","),
+          latitude: filters.coordinates?.[1],
+          longitude: filters.coordinates?.[0],
+        });
 
-    //     return { url: "properties", params };
-    //   },
-  //     providesTags: (result) =>
-  //       result
-  //         ? [
-  //             ...result.map(({ id }) => ({ type: "Properties" as const, id })),
-  //             { type: "Properties", id: "LIST" },
-  //           ]
-  //         : [{ type: "Properties", id: "LIST" }],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         error: "Failed to fetch properties.",
-  //       });
-  //     },
-  //   }),
+        return { url: "properties", params };
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Properties" as const, id })),
+              { type: "Properties", id: "LIST" },
+            ]
+          : [{ type: "Properties", id: "LIST" }],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch properties.",
+        });
+      },
+    }),
 
-  //   getProperty: build.query<Property, number>({
-  //     query: (id) => `properties/${id}`,
-  //     providesTags: (result, error, id) => [{ type: "PropertyDetails", id }],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         error: "Failed to load property details.",
-  //       });
-  //     },
-  //   }),
+    getProperty: build.query<Property, number>({
+      query: (id) => `properties/${id}`,
+      providesTags: (result, error, id) => [{ type: "PropertyDetails", id }],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to load property details.",
+        });
+      },
+    }),
 
-  //   // tenant related endpoints
-  //   getTenant: build.query<Tenant, string>({
-  //     query: (cognitoId) => `tenants/${cognitoId}`,
-  //     providesTags: (result) => [{ type: "Tenants", id: result?.id }],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         error: "Failed to load tenant profile.",
-  //       });
-  //     },
-  //   }),
+    // tenant related endpoints
+    getTenant: build.query<Tenant, string>({
+      query: (cognitoId) => `tenants/${cognitoId}`,
+      providesTags: (result) => [{ type: "Tenants", id: result?.id }],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to load tenant profile.",
+        });
+      },
+    }),
 
-  //   getCurrentResidences: build.query<Property[], string>({
-  //     query: (cognitoId) => `tenants/${cognitoId}/current-residences`,
-  //     providesTags: (result) =>
-  //       result
-  //         ? [
-  //             ...result.map(({ id }) => ({ type: "Properties" as const, id })),
-  //             { type: "Properties", id: "LIST" },
-  //           ]
-  //         : [{ type: "Properties", id: "LIST" }],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         error: "Failed to fetch current residences.",
-  //       });
-  //     },
-  //   }),
+    getCurrentResidences: build.query<Property[], string>({
+      query: (cognitoId) => `tenants/${cognitoId}/current-residences`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Properties" as const, id })),
+              { type: "Properties", id: "LIST" },
+            ]
+          : [{ type: "Properties", id: "LIST" }],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch current residences.",
+        });
+      },
+    }),
 
     updateTenantSettings: build.mutation<
       Tenant,
@@ -170,62 +169,62 @@ export const api = createApi({
       },
     }),
 
-  //   addFavoriteProperty: build.mutation<
-  //     Tenant,
-  //     { cognitoId: string; propertyId: number }
-  //   >({
-  //     query: ({ cognitoId, propertyId }) => ({
-  //       url: `tenants/${cognitoId}/favorites/${propertyId}`,
-  //       method: "POST",
-  //     }),
-  //     invalidatesTags: (result) => [
-  //       { type: "Tenants", id: result?.id },
-  //       { type: "Properties", id: "LIST" },
-  //     ],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         success: "Added to favorites!!",
-  //         error: "Failed to add to favorites",
-  //       });
-  //     },
-  //   }),
+    addFavoriteProperty: build.mutation<
+      Tenant,
+      { cognitoId: string; propertyId: number }
+    >({
+      query: ({ cognitoId, propertyId }) => ({
+        url: `tenants/${cognitoId}/favorites/${propertyId}`,
+        method: "POST",
+      }),
+      invalidatesTags: (result) => [
+        { type: "Tenants", id: result?.id },
+        { type: "Properties", id: "LIST" },
+      ],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          success: "Added to favorites!!",
+          error: "Failed to add to favorites",
+        });
+      },
+    }),
 
-  //   removeFavoriteProperty: build.mutation<
-  //     Tenant,
-  //     { cognitoId: string; propertyId: number }
-  //   >({
-  //     query: ({ cognitoId, propertyId }) => ({
-  //       url: `tenants/${cognitoId}/favorites/${propertyId}`,
-  //       method: "DELETE",
-  //     }),
-  //     invalidatesTags: (result) => [
-  //       { type: "Tenants", id: result?.id },
-  //       { type: "Properties", id: "LIST" },
-  //     ],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         success: "Removed from favorites!",
-  //         error: "Failed to remove from favorites.",
-  //       });
-  //     },
-  //   }),
+    removeFavoriteProperty: build.mutation<
+      Tenant,
+      { cognitoId: string; propertyId: number }
+    >({
+      query: ({ cognitoId, propertyId }) => ({
+        url: `tenants/${cognitoId}/favorites/${propertyId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result) => [
+        { type: "Tenants", id: result?.id },
+        { type: "Properties", id: "LIST" },
+      ],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          success: "Removed from favorites!",
+          error: "Failed to remove from favorites.",
+        });
+      },
+    }),
 
-  //   // manager related endpoints
-  //   getManagerProperties: build.query<Property[], string>({
-  //     query: (cognitoId) => `managers/${cognitoId}/properties`,
-  //     providesTags: (result) =>
-  //       result
-  //         ? [
-  //             ...result.map(({ id }) => ({ type: "Properties" as const, id })),
-  //             { type: "Properties", id: "LIST" },
-  //           ]
-  //         : [{ type: "Properties", id: "LIST" }],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         error: "Failed to load manager profile.",
-  //       });
-  //     },
-  //   }),
+    // manager related endpoints
+    getManagerProperties: build.query<Property[], string>({
+      query: (cognitoId) => `managers/${cognitoId}/properties`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Properties" as const, id })),
+              { type: "Properties", id: "LIST" },
+            ]
+          : [{ type: "Properties", id: "LIST" }],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to load manager profile.",
+        });
+      },
+    }),
 
     updateManagerSettings: build.mutation<
       Manager,
@@ -245,54 +244,54 @@ export const api = createApi({
       },
     }),
 
-  //   createProperty: build.mutation<Property, FormData>({
-  //     query: (newProperty) => ({
-  //       url: `properties`,
-  //       method: "POST",
-  //       body: newProperty,
-  //     }),
-  //     invalidatesTags: (result) => [
-  //       { type: "Properties", id: "LIST" },
-  //       { type: "Managers", id: result?.manager?.id },
-  //     ],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         success: "Property created successfully!",
-  //         error: "Failed to create property.",
-  //       });
-  //     },
-  //   }),
+    createProperty: build.mutation<Property, FormData>({
+      query: (newProperty) => ({
+        url: `properties`,
+        method: "POST",
+        body: newProperty,
+      }),
+      invalidatesTags: (result) => [
+        { type: "Properties", id: "LIST" },
+        { type: "Managers", id: result?.manager?.id },
+      ],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          success: "Property created successfully!",
+          error: "Failed to create property.",
+        });
+      },
+    }),
 
-  //   // lease related enpoints
-  //   getLeases: build.query<Lease[], number>({
-  //     query: () => "leases",
-  //     providesTags: ["Leases"],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         error: "Failed to fetch leases.",
-  //       });
-  //     },
-  //   }),
+    // lease related enpoints
+    getLeases: build.query<Lease[], number>({
+      query: () => "leases",
+      providesTags: ["Leases"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch leases.",
+        });
+      },
+    }),
 
-  //   getPropertyLeases: build.query<Lease[], number>({
-  //     query: (propertyId) => `properties/${propertyId}/leases`,
-  //     providesTags: ["Leases"],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         error: "Failed to fetch property leases.",
-  //       });
-  //     },
-  //   }),
+    getPropertyLeases: build.query<Lease[], number>({
+      query: (propertyId) => `properties/${propertyId}/leases`,
+      providesTags: ["Leases"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch property leases.",
+        });
+      },
+    }),
 
-  //   getPayments: build.query<Payment[], number>({
-  //     query: (leaseId) => `leases/${leaseId}/payments`,
-  //     providesTags: ["Payments"],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         error: "Failed to fetch payment info.",
-  //       });
-  //     },
-  //   }),
+    getPayments: build.query<Payment[], number>({
+      query: (leaseId) => `leases/${leaseId}/payments`,
+      providesTags: ["Payments"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch payment info.",
+        });
+      },
+    }),
 
   //   // application related endpoints
   //   getApplications: build.query<
@@ -357,17 +356,17 @@ export const {
   useGetAuthUserQuery,
   useUpdateTenantSettingsMutation,
   useUpdateManagerSettingsMutation,
-//   useGetPropertiesQuery,
-//   useGetPropertyQuery,
-//   useGetCurrentResidencesQuery,
-//   useGetManagerPropertiesQuery,
-//   useCreatePropertyMutation,
-//   useGetTenantQuery,
-//   useAddFavoritePropertyMutation,
-//   useRemoveFavoritePropertyMutation,
-//   useGetLeasesQuery,
-//   useGetPropertyLeasesQuery,
-//   useGetPaymentsQuery,
+  useGetPropertiesQuery,
+  useGetPropertyQuery,
+  useGetCurrentResidencesQuery,
+  useGetManagerPropertiesQuery,
+  useCreatePropertyMutation,
+  useGetTenantQuery,
+  useAddFavoritePropertyMutation,
+  useRemoveFavoritePropertyMutation,
+  useGetLeasesQuery,
+  useGetPropertyLeasesQuery,
+  useGetPaymentsQuery,
 //   useGetApplicationsQuery,
 //   useUpdateApplicationStatusMutation,
 //   useCreateApplicationMutation,
