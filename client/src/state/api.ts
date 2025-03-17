@@ -1,6 +1,6 @@
 import { cleanParams, createNewUserInDatabase, withToast } from "@/lib/utils";
 import {
-  // Application,
+  Application,
   Lease,
   Manager,
   Payment,
@@ -31,7 +31,7 @@ export const api = createApi({
     "PropertyDetails",
     "Leases",
     "Payments",
-  //   "Applications",
+    "Applications",
   ],
   endpoints: (build) => ({
     getAuthUser: build.query<User, void>({
@@ -293,62 +293,62 @@ export const api = createApi({
       },
     }),
 
-  //   // application related endpoints
-  //   getApplications: build.query<
-  //     Application[],
-  //     { userId?: string; userType?: string }
-  //   >({
-  //     query: (params) => {
-  //       const queryParams = new URLSearchParams();
-  //       if (params.userId) {
-  //         queryParams.append("userId", params.userId.toString());
-  //       }
-  //       if (params.userType) {
-  //         queryParams.append("userType", params.userType);
-  //       }
+    // application related endpoints
+    getApplications: build.query<
+      Application[],
+      { userId?: string; userType?: string }
+    >({
+      query: (params) => {
+        const queryParams = new URLSearchParams();
+        if (params.userId) {
+          queryParams.append("userId", params.userId.toString());
+        }
+        if (params.userType) {
+          queryParams.append("userType", params.userType);
+        }
 
-  //       return `applications?${queryParams.toString()}`;
-  //     },
-  //     providesTags: ["Applications"],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         error: "Failed to fetch applications.",
-  //       });
-  //     },
-  //   }),
+        return `applications?${queryParams.toString()}`;
+      },
+      providesTags: ["Applications"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch applications.",
+        });
+      },
+    }),
 
-  //   updateApplicationStatus: build.mutation<
-  //     Application & { lease?: Lease },
-  //     { id: number; status: string }
-  //   >({
-  //     query: ({ id, status }) => ({
-  //       url: `applications/${id}/status`,
-  //       method: "PUT",
-  //       body: { status },
-  //     }),
-  //     invalidatesTags: ["Applications", "Leases"],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         success: "Application status updated successfully!",
-  //         error: "Failed to update application settings.",
-  //       });
-  //     },
-  //   }),
+    updateApplicationStatus: build.mutation<
+      Application & { lease?: Lease },
+      { id: number; status: string }
+    >({
+      query: ({ id, status }) => ({
+        url: `applications/${id}/status`,
+        method: "PUT",
+        body: { status },
+      }),
+      invalidatesTags: ["Applications", "Leases"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          success: "Application status updated successfully!",
+          error: "Failed to update application settings.",
+        });
+      },
+    }),
 
-  //   createApplication: build.mutation<Application, Partial<Application>>({
-  //     query: (body) => ({
-  //       url: `applications`,
-  //       method: "POST",
-  //       body: body,
-  //     }),
-  //     invalidatesTags: ["Applications"],
-  //     async onQueryStarted(_, { queryFulfilled }) {
-  //       await withToast(queryFulfilled, {
-  //         success: "Application created successfully!",
-  //         error: "Failed to create applications.",
-  //       });
-  //     },
-  //   }),
+    createApplication: build.mutation<Application, Partial<Application>>({
+      query: (body) => ({
+        url: `applications`,
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Applications"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          success: "Application created successfully!",
+          error: "Failed to create applications.",
+        });
+      },
+    }),
   }),
 });
 
@@ -367,7 +367,7 @@ export const {
   useGetLeasesQuery,
   useGetPropertyLeasesQuery,
   useGetPaymentsQuery,
-//   useGetApplicationsQuery,
-//   useUpdateApplicationStatusMutation,
-//   useCreateApplicationMutation,
+  useGetApplicationsQuery,
+  useUpdateApplicationStatusMutation,
+  useCreateApplicationMutation,
 } = api;
